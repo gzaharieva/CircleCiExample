@@ -11,7 +11,7 @@ dependencies:
         - ~/android
     override:
         - ./install-dependencies.sh
-
+ 
 test:
     pre:
         - $ANDROID_HOME/tools/emulator -avd test-target -no-skin -no-audio -no-window -no-boot-anim:
@@ -21,6 +21,9 @@ test:
         #     parallel: true
     # override:
     #     - ./gradlew connectedAndroidTestDebug -PdisablePreDex
+     post:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
 
 deployment:
     develop:
