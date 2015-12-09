@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.2"
 
     adbOptions {
-        timeOutInMs 60000 // set timeout to 1 minute
+        timeOutInMs 180000 // set timeout to 1 minute
     }
 
     defaultConfig {
@@ -29,4 +29,10 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
+    // Unit testing dependencies
+    testCompile 'junit:junit:4.12'
+    // Set this dependency if you want to use Mockito
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    // Set this dependency if you want to use Hamcrest matching
+    testCompile 'org.hamcrest:hamcrest-library:1.1'
 }

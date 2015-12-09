@@ -14,6 +14,6 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     }
 
     public void testSum(){
-        Assert.assertEquals(4,4);
+        Assert.assertEquals(4,66);
     }
 }
