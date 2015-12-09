@@ -1,73 +1,18 @@
-## Customize the test machine
 machine:
-
-  timezone:
-    America/Los_Angeles # Set the timezone
-
-  # Version of ruby to use
-  ruby:
-    version:
-      1.8.7-p358-falcon-perf
-
-  # Override /etc/hosts
-  hosts:
-    circlehost: 127.0.0.1
-    dev.mycompany.com: 127.0.0.1
-
-  # Add some environment variables
   environment:
-    CIRCLE_ENV: test
-    DATABASE_URL: postgres://ubuntu:@127.0.0.1:5432/circle_test
+    ANDROID_HOME: /usr/local/android-sdk-linux
+    GRADLE_OPTS: -Xmx512m
 
-## Customize checkout
-checkout:
+dependencies:
   post:
-    - git submodule sync
-    - git submodule update --init # use submodules
+    - echo y | android update sdk --no-ui --all --filter "platform-tools,build-tools-21.0.2,build-tools-20.0.0,android-21,sys-img-armeabi-v7a-android-21,android-20,sys-img-armeabi-v7a-android-wear-20,android-19,sys-img-armeabi-v7a-android-19,android-18,sys-img-armeabi-v7a-android-18,android-17,sys-img-armeabi-v7a-android-17,android-16,sys-img-armeabi-v7a-android-16,android-15,sys-img-armeabi-v7a-android-15,android-10,extra-android-support,extra-google-google_play_services,extra-google-m2repository,extra-android-m2repository"
+    -  echo n | android create avd -n testing -f -t android-18
 
-## Customize dependencies
-# dependencies:
-#   pre:
-#    # - npm install coffeescript # install from a different package manager
-#     - gem uninstall bundler # use a custom version of bundler
-#     - gem install bundler --pre
-
-#   override:
-#     - bundle install: # note ':' here
-#         timeout: 180 # fail if command has no output for 3 minutes
-
-#   # we automatically cache and restore many dependencies between
-#   # builds. If you need to, you can add custom paths to cache:
-#   cache_directories:
-#     - "custom_1"   # relative to the build directory
-#     - "~/custom_2" # relative to the user's home directory
-
-# ## Customize database setup
-# database:
-#   override:
-#     # replace CircleCI's generated database.yml
-#     - cp config/database.yml.ci config/database.yml
-#     - bundle exec rake db:create db:schema:load
-
-## Customize test commands
-# test:
-#   override:
-#     - junit test/unit-tests # use PHPunit for testing
-#   post:
-#     - bundle exec rake jasmine:ci: # add an extra test type
-#         environment:
-#           RAILS_ENV: test
-#           RACK_ENV: test
-
-## Customize deployment commands
-deployment:
-  staging:
-    branch: master
-    heroku:
-      appname: app
-
-## Custom notifications
-notify:
-  webhooks:
-    # A list of hashes representing hooks. Only the url field is supported.
-    - url: https://someurl.com/hooks/circle
+test:
+  override:
+    - $ANDROID_HOME/tools/emulator -avd testing -no-window -no-boot-anim -no-audio:
+        background: true
+        parallel: true
+    - ./gradlew assembleDebug
+    - bin/android-wait-for-emulator
+    - bin/run-tests test.namespace
