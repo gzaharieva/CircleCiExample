@@ -4,11 +4,16 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
+    adbOptions {
+        timeOutInMs 60000 // set timeout to 1 minute
+    }
+
     defaultConfig {
         applicationId "com.example.gzaharieva.circleciexample"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
+        multiDexEnabled = true
         versionName "1.0"
     }
     buildTypes {
